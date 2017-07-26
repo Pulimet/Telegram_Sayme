@@ -17,6 +17,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.util.Xml;
 
 import org.telegram.messenger.time.FastDateFormat;
@@ -38,6 +39,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.logging.Logger;
+
+import static android.R.attr.key;
+import static android.R.attr.value;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 public class LocaleController {
 
@@ -159,6 +165,7 @@ public class LocaleController {
     private ArrayList<LocaleInfo> otherLanguages = new ArrayList<>();
 
     private static volatile LocaleController Instance = null;
+
     public static LocaleController getInstance() {
         LocaleController localInstance = Instance;
         if (localInstance == null) {
@@ -657,6 +664,7 @@ public class LocaleController {
             return;
         }
         File pathToFile = localeInfo.getPathToFile();
+        Log.e("ZZZZZ", pathToFile.getAbsolutePath());
         String shortName = localeInfo.shortName;
         ConnectionsManager.getInstance().setLangCode(shortName.replace("_", "-"));
         if (localeInfo.isRemote() && !pathToFile.exists()) {
@@ -715,7 +723,8 @@ public class LocaleController {
     }
 
     private String getStringInternal(String key, int res) {
-        String value = localeValues.get(key);
+        //String value = localeValues.get(key);
+        String value = null;
         if (value == null) {
             try {
                 value = ApplicationLoader.applicationContext.getString(res);
@@ -1235,7 +1244,7 @@ public class LocaleController {
                     return getString("WithinAWeek", R.string.WithinAWeek);
                 } else if (user.status.expires == -102) {
                     return getString("WithinAMonth", R.string.WithinAMonth);
-                }  else {
+                } else {
                     return formatDateOnline(user.status.expires);
                 }
             }
